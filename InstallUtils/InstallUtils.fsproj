@@ -31,7 +31,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <DocumentationFile>bin\Release\InstallUtils.XML</DocumentationFile>
-    <OtherFlags>--staticlink:Reversible</OtherFlags>
+    <OtherFlags>--staticlink:Reversible --staticlink:Interop.IWshRuntimeLibrary --staticlink:Interop.NetFwTypeLib</OtherFlags>
   </PropertyGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
@@ -59,8 +59,18 @@
     <Compile Include="Firewall.fs" />
     <Compile Include="Shortcuts.fs" />
     <Compile Include="InteractiveConsole.fs" />
+    <None Include="Script1.fsx" />
     <COMReference Include="NetFwTypeLib">
       <Guid>{58fbcf7c-e7a9-467c-80b3-fc65e8fcca08}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <Isolated>False</Isolated>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Private>True</Private>
+    </COMReference>
+    <COMReference Include="Windows Script Host Object Model">
+      <Guid>{f935dc20-1cf0-11d0-adb9-00c04fd58a0b}</Guid>
       <VersionMajor>1</VersionMajor>
       <VersionMinor>0</VersionMinor>
       <Lcid>0</Lcid>

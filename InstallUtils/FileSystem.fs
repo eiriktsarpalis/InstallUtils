@@ -33,7 +33,7 @@
                 File.Move(dst, src)
                 previous |> Option.iter (fun tmp -> File.Move(tmp, dst))
 
-            let fini previous = previous |> Option.iter (fun tmp -> File.Delete tmp)
+            let fini previous = previous |> Option.iter (fun tmp -> try File.Delete tmp with _ -> ())
 
             Reversible.FromComponents (move, recover, fini)
 
@@ -62,7 +62,7 @@
                 File.Delete dst
                 previous |> Option.iter(fun tmp -> File.Move(tmp, dst))
 
-            let fini previous = previous |> Option.iter (fun tmp -> File.Delete tmp)
+            let fini previous = previous |> Option.iter (fun tmp -> try File.Delete tmp with _ -> ())
 
             Reversible.FromComponents(copy, recover, fini)
 
@@ -81,7 +81,7 @@
                     (), Some tmp
 
             let recover backup = backup |> Option.iter (fun tmp -> File.Move(tmp, file))
-            let fini backup = backup |> Option.iter (fun tmp -> if File.Exists tmp then File.Delete tmp)
+            let fini backup = backup |> Option.iter (fun tmp -> try File.Delete tmp with _ -> ())
 
             Reversible.FromComponents(delete, recover, fini)
 

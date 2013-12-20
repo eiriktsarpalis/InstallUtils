@@ -1,38 +1,60 @@
 ﻿namespace Nessos.InstallUtils
 
-    open System
-    open System.IO
+    open IWshRuntimeLibrary
 
     open Nessos.Reversible
+
+    open System
+    open System.IO
 
     type ShortcutDescriptor =
         {
             Name : string
-            SourceFile : string
-            TargetDir : string
-            Icon : string option
+            Location : string
+            IconLocation : string option
+            Description : string option
+
+            TargetPath : string
+            Arguments : string option
+            WorkingDirectory : string option
         }
     with
-        member d.Path = Path.Combine(d.TargetDir, d.Name + ".url") |> Path.GetFullPath
+        member d.Path = Path.Combine(d.Location, d.Name + ".lnk")
 
-        static member Create (d : ShortcutDescriptor) : unit =
-            if File.Exists d.Path then File.Delete d.Path
-            elif not <| Directory.Exists d.TargetDir then 
-                Directory.CreateDirectory d.TargetDir |> ignore
+        static member Create(name : string, location : string, target : string, ?iconLocation, ?description, ?arguments, ?workingDirectory) =
+            {
+                Name = name
+                Location = location
+                TargetPath = target
+                IconLocation = iconLocation
+                Description = description
+                Arguments = arguments
+                WorkingDirectory = workingDirectory    
+            }
 
-            use sw = new StreamWriter(d.Path)
-            sw.WriteLine("[InternetShortcut]")
-            sw.WriteLine("URL=file:///" + d.SourceFile)
-            d.Icon |> Option.iter (fun icon ->
-                sw.WriteLine("IconIndex=0")
-                sw.WriteLine("IconFile=" + icon.Replace('\\','/')))
+        static member Create(name : string, location, target : string, ?iconLocation, ?description, ?arguments, ?workingDirectory) =
+            {
+                Name = name
+                Location = Environment.GetFolderPath location
+                TargetPath = target
+                IconLocation = iconLocation
+                Description = description
+                Arguments = arguments
+                WorkingDirectory = workingDirectory    
+            }
 
-            sw.Flush()
+        static member Save(d : ShortcutDescriptor) =
+            let wsh = new WshShellClass()
+            let shortcut = wsh.CreateShortcut(d.Path) :?> IWshShortcut
+            shortcut.TargetPath <- d.TargetPath
+            d.Arguments |> Option.iter(fun arg -> shortcut.Arguments <- arg)
+            d.Description |> Option.iter(fun d -> shortcut.Description <- d)
+            d.WorkingDirectory |> Option.iter(fun d -> shortcut.WorkingDirectory <- d)
+            d.IconLocation |> Option.iter(fun l -> shortcut.IconLocation <- l)
+            shortcut.WindowStyle <- 1
+            shortcut.Save()
 
-        static member OfSpecialFolder(source : string, targetFolder : Environment.SpecialFolder, name : string, ?icon, ?subDir) =
-            let icon = defaultArg icon source
-            let targetDir = Path.Combine(Environment.GetFolderPath targetFolder, defaultArg subDir "")
-            { Name = name ; SourceFile = source ; TargetDir = targetDir ; Icon = Some icon }
+        static member Delete(d : ShortcutDescriptor) = System.IO.File.Delete(d.Path)
 
         static member RevCreate (d : ShortcutDescriptor) =
             let create () =
@@ -42,7 +64,7 @@
                         File.Move(d.Path, backup); Some backup
                     else None
 
-                ShortcutDescriptor.Create d
+                ShortcutDescriptor.Save d
 
                 (), backup
 
