@@ -5,13 +5,13 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>73d663ea-a1ac-47d9-9705-b25aecbbd217</ProjectGuid>
+    <ProjectGuid>f95e5239-a25e-4edd-bc38-521f6dc86e00</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Reversible</RootNamespace>
-    <AssemblyName>Reversible</AssemblyName>
+    <RootNamespace>InstallUtils</RootNamespace>
+    <AssemblyName>InstallUtils</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFSharpCoreVersion>4.3.0.0</TargetFSharpCoreVersion>
-    <Name>Reversible</Name>
+    <Name>InstallUtils</Name>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,7 +21,7 @@
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Debug\Reversible.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\InstallUtils.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,24 +30,8 @@
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Release\Reversible.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\InstallUtils.XML</DocumentationFile>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="mscorlib" />
-    <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Numerics" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Utils.fs" />
-    <Compile Include="Types.fs" />
-    <Compile Include="Trampoline.fs" />
-    <Compile Include="PublicApi.fs" />
-    <Compile Include="Extensions.fs" />
-  </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
   </PropertyGroup>
@@ -64,6 +48,43 @@
     </Otherwise>
   </Choose>
   <Import Project="$(FSharpTargetsPath)" />
+  <ItemGroup>
+    <Compile Include="Utils.fs" />
+    <Compile Include="FileSystem.fs" />
+    <Compile Include="Environment.fs" />
+    <Compile Include="Registry.fs" />
+    <Compile Include="GAC.fs" />
+    <Compile Include="Service.fs" />
+    <Compile Include="Firewall.fs" />
+    <Compile Include="Shortcuts.fs" />
+    <Compile Include="InteractiveConsole.fs" />
+    <COMReference Include="NetFwTypeLib">
+      <Guid>{58fbcf7c-e7a9-467c-80b3-fc65e8fcca08}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <Isolated>False</Isolated>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Private>True</Private>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.ServiceProcess" />
+    <ProjectReference Include="..\Reversible\Reversible.fsproj">
+      <Name>Reversible</Name>
+      <Project>{73d663ea-a1ac-47d9-9705-b25aecbbd217}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
