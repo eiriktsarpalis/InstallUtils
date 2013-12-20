@@ -44,7 +44,7 @@
             options
             |> List.map (fun opt -> opt, opt.InitiallyEnabled)
             |> promptOnce clearScreen
-            |> List.choose (fun (opt, enabled) -> if enabled then Some opt else None)
+            |> List.choose (fun (opt, enabled) -> if enabled then Some opt.Value else None)
 
 
         static member ReadSetting (message : string) (defaultSetting : string) =
