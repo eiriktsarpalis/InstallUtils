@@ -59,7 +59,6 @@
     <Compile Include="Firewall.fs" />
     <Compile Include="Shortcuts.fs" />
     <Compile Include="InteractiveConsole.fs" />
-    <None Include="Script1.fsx" />
     <COMReference Include="NetFwTypeLib">
       <Guid>{58fbcf7c-e7a9-467c-80b3-fc65e8fcca08}</Guid>
       <VersionMajor>1</VersionMajor>
